@@ -169,17 +169,38 @@ class CustomPowerButtonCard extends HTMLElement {
       this.handleTap();
     });
   }
-
   handleTap() {
-    const event = new Event('hass-action', {
-      bubbles: true,
-      composed: true,
-    });
-    event.detail = {
-      config: this.config.tap_action,
-      entityId: this.config.entity,
-    };
-    this.dispatchEvent(event);
+    if (!this._hass || !this.config) return;
+    
+    const action = this.config.tap_action;
+    
+    if (action.action === 'more-info') {
+      const event = new Event('hass-more-info', {
+        bubbles: true,
+        composed: true,
+      });
+      event.detail = {
+        entityId: this.config.entity,
+      };
+      this.dispatchEvent(event);
+    } else if (action.action === 'toggle') {
+      this._hass.callService('homeassistant', 'toggle', {
+        entity_id: this.config.entity,
+      });
+    } else if (action.action === 'call-service' && action.service) {
+      const [domain, service] = action.service.split('.');
+      this._hass.callService(domain, service, action.service_data || {});
+    } else if (action.action === 'navigate' && action.navigation_path) {
+      history.pushState(null, '', action.navigation_path);
+      const event = new Event('location-changed', {
+        bubbles: true,
+        composed: true,
+      });
+      event.detail = { replace: false };
+      window.dispatchEvent(event);
+    } else if (action.action === 'url' && action.url_path) {
+      window.open(action.url_path);
+    }
   }
 
   getCardSize() {
