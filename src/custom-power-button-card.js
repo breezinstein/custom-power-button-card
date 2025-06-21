@@ -57,15 +57,18 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
         </ha-card>
       `;
       return;
-    }
-
-    const barValue = parseFloat(barEntity.state || 0);
-    const percentage = Math.max(0, Math.min(100, 
-      ((barValue - this.config.bar_min) / (this.config.bar_max - this.config.bar_min)) * 100
-    ));
-
-    let barColor;
-    if (percentage <= 33) {
+    }    const barValue = parseFloat(barEntity.state || 0);
+    const isBarValueValid = !isNaN(barValue) && barEntity.state !== 'unavailable' && barEntity.state !== 'unknown';
+    
+    let percentage = 0;
+    if (isBarValueValid) {
+      percentage = Math.max(0, Math.min(100, 
+        ((barValue - this.config.bar_min) / (this.config.bar_max - this.config.bar_min)) * 100
+      ));
+    }    let barColor;
+    if (!isBarValueValid) {
+      barColor = 'var(--disabled-text-color)';
+    } else if (percentage <= 33) {
       barColor = this.config.color_good;
     } else if (percentage <= 66) {
       barColor = this.config.color_mid;
@@ -98,13 +101,11 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
           margin-bottom: 2px;
           line-height: 1.2;
         }
-        
-        .state {
-          font-size: 12px;
-          position: absolute;
-          right: 12px;
-          top: 12px;
-          color: ${isOn ? 'var(--primary-text-color)' : 'var(--secondary-text-color)'};
+          .state {
+          font-size: 11px;
+          color: ${isOn ? 'var(--secondary-text-color)' : 'var(--disabled-text-color)'};
+          margin-top: 2px;
+          line-height: 1.2;
         }
         
         .bar {
@@ -150,9 +151,8 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
           ` : ''}
           
           <div class="bar"></div>
-          
-          <div class="bar-label">
-            ${Math.trunc(barValue)}${unit}
+            <div class="bar-label">
+            ${isBarValueValid ? `${Math.trunc(barValue)}${unit}` : 'unavailable'}
           </div>
         </div>
       </ha-card>
