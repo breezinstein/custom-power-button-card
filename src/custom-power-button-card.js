@@ -75,40 +75,34 @@ class CustomPowerButtonCard extends HTMLElement {
     const isOn = entity.state === 'on';
     const unit = barEntity.attributes?.unit_of_measurement || '';
 
-    this.shadowRoot.innerHTML = `
-      <style>
+    this.shadowRoot.innerHTML = `      <style>
         ha-card {
           position: relative;
           overflow: hidden;
           cursor: pointer;
-          transition: all 0.2s ease;
-        }
-        
-        ha-card:hover {
-          transform: scale(1.02);
         }
         
         .card-content {
           position: relative;
-          padding: 16px;
-          border-radius: 10px;
+          padding: 12px;
+          border-radius: 12px;
           background: ${isOn ? 'var(--card-background-color)' : 'var(--disabled-text-color)'};
           opacity: ${isOn ? '1' : '0.6'};
-          min-height: 60px;
+          min-height: 42px;
         }
-        
-        .name {
+          .name {
           font-size: 14px;
-          font-weight: bold;
+          font-weight: 500;
           color: ${isOn ? 'var(--primary-text-color)' : 'var(--secondary-text-color)'};
-          margin-bottom: 4px;
+          margin-bottom: 2px;
+          line-height: 1.2;
         }
         
         .state {
           font-size: 12px;
           position: absolute;
-          right: 16px;
-          top: 16px;
+          right: 12px;
+          top: 12px;
           color: ${isOn ? 'var(--primary-text-color)' : 'var(--secondary-text-color)'};
         }
         
@@ -123,7 +117,7 @@ class CustomPowerButtonCard extends HTMLElement {
             ${barColor} ${percentage}%, 
             var(--disabled-text-color) ${percentage}%, 
             var(--disabled-text-color) 100%);
-          border-radius: 0 0 10px 10px;
+          border-radius: 0 0 12px 12px;
           opacity: ${isOn ? '1' : '0.3'};
         }
         
