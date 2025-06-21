@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "description": "A custom Home Assistant Lovelace card for displaying power consumption with button functionality",
-  "main": "dist/custom-power-button-card.js",
+  "main": "custom-power-button-card.js",
   "scripts": {
     "build": "rollup -c",
     "dev": "rollup -c -w",

@@ -17,10 +17,10 @@ This is a Home Assistant custom card project for HACS (Home Assistant Community 
 ## Key Files
 
 - `src/custom-power-button-card.js` - Main card implementation
+- `custom-power-button-card.js` - Built output for distribution (root level for HACS compliance)
 - `hacs.json` - HACS metadata
 - `info.md` - HACS description
 - `rollup.config.js` - Build configuration
-- `dist/` - Built output for distribution
 
 ## Development Notes
 

@@ -25,7 +25,7 @@
 ## Manual Installation
 
 1. **Download the File:**
-   - Download `custom-power-button-card.js` from the `dist/` folder
+   - Download `custom-power-button-card.js` from the root of the repository
    - Place it in `config/www/community/custom-power-button-card/`
 
 2. **Add Resource:**

@@ -5,7 +5,7 @@ import terser from '@rollup/plugin-terser';
 export default {
   input: 'src/custom-power-button-card.js',
   output: {
-    file: 'dist/custom-power-button-card.js',
+    file: 'custom-power-button-card.js',
     format: 'iife',
     name: 'CustomPowerButtonCard'
   },
