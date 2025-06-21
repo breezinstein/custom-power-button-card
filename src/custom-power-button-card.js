@@ -1,9 +1,10 @@
-class CustomPowerButtonCard extends HTMLElement {
-  constructor() {
+class CustomPowerButtonCard extends HTMLElement {  constructor() {
     super();
     this.attachShadow({ mode: 'open' });
     this._hass = null;
     this.config = null;
+    this.holdTimer = null;
+    this.holdStarted = false;
   }
 
   setConfig(config) {
@@ -155,14 +156,61 @@ class CustomPowerButtonCard extends HTMLElement {
           </div>
         </div>
       </ha-card>
-    `;
-
-    // Add click handler
+    `;    // Add click and hold handlers
     const card = this.shadowRoot.querySelector('ha-card');
-    card.addEventListener('click', () => {
-      this.handleTap();
+    
+    // Handle regular click
+    card.addEventListener('click', (e) => {
+      if (!this.holdStarted) {
+        this.handleTap();
+      }
     });
+
+    // Handle hold start (mousedown/touchstart)
+    const handleHoldStart = (e) => {
+      this.holdStarted = false;
+      this.holdTimer = setTimeout(() => {
+        this.holdStarted = true;
+        this.handleHold();
+      }, 500); // 500ms hold time
+    };
+
+    // Handle hold end (mouseup/touchend/mouseleave)
+    const handleHoldEnd = (e) => {
+      if (this.holdTimer) {
+        clearTimeout(this.holdTimer);
+        this.holdTimer = null;
+      }
+      // Reset holdStarted after a short delay to prevent click after hold
+      setTimeout(() => {
+        this.holdStarted = false;
+      }, 50);
+    };
+
+    // Mouse events
+    card.addEventListener('mousedown', handleHoldStart);
+    card.addEventListener('mouseup', handleHoldEnd);
+    card.addEventListener('mouseleave', handleHoldEnd);
+
+    // Touch events
+    card.addEventListener('touchstart', handleHoldStart, { passive: true });
+    card.addEventListener('touchend', handleHoldEnd);
+    card.addEventListener('touchcancel', handleHoldEnd);
   }
+  handleHold() {
+    if (!this._hass || !this.config || !this.config.bar_entity) return;
+    
+    // Open more-info for the bar entity (power sensor)
+    const event = new Event('hass-more-info', {
+      bubbles: true,
+      composed: true,
+    });
+    event.detail = {
+      entityId: this.config.bar_entity,
+    };
+    this.dispatchEvent(event);
+  }
+
   handleTap() {
     if (!this._hass || !this.config) return;
     
