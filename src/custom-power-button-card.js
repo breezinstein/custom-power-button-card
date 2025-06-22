@@ -59,6 +59,7 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
     }    const barValue = parseFloat(barEntity?.state || 0);
     const isBarEntityPresent = !!barEntity;
     const isBarValueValid = !isNaN(barValue);
+    const isOn = entity.state === 'on';
     
     let percentage = 0;
     if (isBarEntityPresent && isBarValueValid) {
@@ -67,9 +68,8 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
       ));
     } else if (!isBarEntityPresent) {
       // When bar entity is missing, use main entity state for percentage
-      percentage = isOn ? 100 : 0;    }
-
-    const isOn = entity.state === 'on';
+      percentage = isOn ? 100 : 0;
+    }
 
     let barColor;
     if (!isBarEntityPresent) {
