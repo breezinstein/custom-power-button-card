@@ -87,7 +87,7 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
         }
           .card-content {
           position: relative;
-          padding: 12px 12px 30px 12px;
+          padding: 12px 12px 12px 12px;
           border-radius: 12px;
           background: ${isOn ? 'var(--card-background-color)' : 'var(--disabled-text-color)'};
           opacity: ${isOn ? '1' : '0.6'};
