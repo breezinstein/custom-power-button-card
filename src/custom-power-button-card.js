@@ -85,14 +85,13 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
           overflow: hidden;
           cursor: pointer;
         }
-        
-        .card-content {
+          .card-content {
           position: relative;
-          padding: 12px;
+          padding: 12px 12px 30px 12px;
           border-radius: 12px;
           background: ${isOn ? 'var(--card-background-color)' : 'var(--disabled-text-color)'};
           opacity: ${isOn ? '1' : '0.6'};
-          min-height: 42px;
+          min-height: 24px;
         }
           .name {
           font-size: 14px;
