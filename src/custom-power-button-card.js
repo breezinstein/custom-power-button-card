@@ -160,10 +160,9 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
           pointer-events: none;
         }
       </style>
-      
-      <ha-card>
+        <ha-card>
         <div class="card-content">
-          ${isBarEntityPresent ? `<div class="name">${deviceName}</div>` : ''}
+          <div class="name">${deviceName}</div>
           
           ${this.config.show_state && isBarEntityPresent ? `<div class="state">${entity.state}</div>` : ''}
             
