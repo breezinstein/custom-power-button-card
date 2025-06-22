@@ -57,15 +57,25 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
       `;
       return;
     }    const barValue = parseFloat(barEntity?.state || 0);
+    const isBarEntityPresent = !!barEntity;
     const isBarValueValid = !isNaN(barValue);
     
     let percentage = 0;
-    if (isBarValueValid) {
+    if (isBarEntityPresent && isBarValueValid) {
       percentage = Math.max(0, Math.min(100, 
         ((barValue - this.config.bar_min) / (this.config.bar_max - this.config.bar_min)) * 100
       ));
-    }let barColor;
-    if (!isBarValueValid) {
+    } else if (!isBarEntityPresent) {
+      // When bar entity is missing, use main entity state for percentage
+      percentage = isOn ? 100 : 0;    }
+
+    const isOn = entity.state === 'on';
+
+    let barColor;
+    if (!isBarEntityPresent) {
+      // When bar entity is missing, use simple on/off coloring
+      barColor = isOn ? this.config.color_good : 'var(--disabled-text-color)';
+    } else if (!isBarValueValid) {
       barColor = 'var(--disabled-text-color)';
     } else if (percentage <= 33) {
       barColor = this.config.color_good;
@@ -73,7 +83,8 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
       barColor = this.config.color_mid;
     } else {
       barColor = this.config.color_bad;
-    }    const isOn = entity.state === 'on';
+    }
+
     const unit = barEntity?.attributes?.unit_of_measurement || '';
 
     this.shadowRoot.innerHTML = `      <style>
@@ -132,21 +143,23 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
           pointer-events: none;
         }
       </style>
-      
-      <ha-card>
+        <ha-card>
         <div class="card-content">
-          <div class="name">
-            ${this.config.name || entity.attributes.friendly_name}
-          </div>
+          ${isBarEntityPresent ? `
+            <div class="name">
+              ${this.config.name || entity.attributes.friendly_name}
+            </div>
+          ` : ''}
           
-          ${this.config.show_state ? `
+          ${this.config.show_state && isBarEntityPresent ? `
             <div class="state">
               ${entity.state}
             </div>
           ` : ''}
-            <div class="bar"></div>
+            
+          <div class="bar"></div>
             <div class="bar-label">
-            ${Math.trunc(barValue)}${unit}
+            ${isBarEntityPresent ? `${Math.trunc(barValue)}${unit}` : entity.state}
           </div>
         </div>
       </ha-card>
