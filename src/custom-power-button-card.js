@@ -84,10 +84,9 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
           position: relative;
           overflow: hidden;
           cursor: pointer;
-        }
-          .card-content {
+        }        .card-content {
           position: relative;
-          border-radius: 12px;
+          border-radius: 10px;
           background: ${isOn ? 'var(--card-background-color)' : 'var(--disabled-text-color)'};
           opacity: ${isOn ? '1' : '0.6'};
           min-height: 24px;
@@ -98,15 +97,16 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
           color: ${isOn ? 'var(--primary-text-color)' : 'var(--secondary-text-color)'};
           margin-bottom: 2px;
           line-height: 1.2;
-        }
-          .state {
-          font-size: 11px;
-          color: ${isOn ? 'var(--secondary-text-color)' : 'var(--disabled-text-color)'};
-          margin-top: 2px;
+        }        .state {
+          font-size: 12px;
+          position: absolute;
+          right: 10px;
+          top: 50%;
+          transform: translateY(-50%);
+          color: ${isOn ? 'var(--primary-text-color)' : 'var(--secondary-text-color)'};
           line-height: 1.2;
         }
-        
-        .bar {
+          .bar {
           position: absolute;
           bottom: 0;
           left: 0;
@@ -117,9 +117,8 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
             ${barColor} ${percentage}%, 
             var(--disabled-text-color) ${percentage}%, 
             var(--disabled-text-color) 100%);
-          border-radius: 0 0 12px 12px;
+          border-radius: 0 0 10px 10px;
           opacity: ${isOn ? '1' : '0.3'};
-          transform: translateY(100%);
         }
         
         .bar-label {
