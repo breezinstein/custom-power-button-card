@@ -87,7 +87,6 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
         }
           .card-content {
           position: relative;
-          padding: 12px 12px 12px 12px;
           border-radius: 12px;
           background: ${isOn ? 'var(--card-background-color)' : 'var(--disabled-text-color)'};
           opacity: ${isOn ? '1' : '0.6'};
@@ -120,6 +119,7 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
             var(--disabled-text-color) 100%);
           border-radius: 0 0 12px 12px;
           opacity: ${isOn ? '1' : '0.3'};
+          transform: translateY(100%);
         }
         
         .bar-label {
