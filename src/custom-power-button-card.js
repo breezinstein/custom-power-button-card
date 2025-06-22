@@ -109,7 +109,7 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
         
         .bar {
           position: absolute;
-          bottom: 0;
+          bottom: -18px;
           left: 0;
           height: 18px;
           width: 100%;
