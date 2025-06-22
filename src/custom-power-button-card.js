@@ -85,12 +85,10 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
       barColor = this.config.color_mid;
     } else {
       barColor = this.config.color_bad;
-    }
-
-    // Prepare template variables to avoid issues with template literals
-    const cardBackground = isOn ? 'var(--card-background-color)' : 'var(--disabled-text-color)';
+    }    // Prepare template variables to avoid issues with template literals
+    const cardBackground = isOn ? 'var(--card-background-color)' : 'var(--card-background-color)';
     const cardOpacity = isOn ? '1' : '0.6';
-    const nameColor = isOn ? 'var(--primary-text-color)' : 'var(--secondary-text-color)';
+    const nameColor = isOn ? 'var(--primary-text-color)' : 'var(--primary-text-color)';
     const stateColor = isOn ? 'var(--primary-text-color)' : 'var(--secondary-text-color)';
     const barOpacity = isOn ? '1' : '0.3';
     const labelColor = isOn ? 'white' : 'var(--secondary-text-color)';
