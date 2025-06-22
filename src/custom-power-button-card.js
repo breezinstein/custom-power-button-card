@@ -40,8 +40,7 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
 
   connectedCallback() {
     this.render();
-  }
-  render() {
+  }  render() {
     if (!this._hass || !this.config) return;
 
     const entity = this._hass.states[this.config.entity];
@@ -56,10 +55,13 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
         </ha-card>
       `;
       return;
-    }    const barValue = parseFloat(barEntity?.state || 0);
+    }
+
+    const barValue = parseFloat(barEntity?.state || 0);
     const isBarEntityPresent = !!barEntity;
     const isBarValueValid = !isNaN(barValue);
     const isOn = entity.state === 'on';
+    const unit = barEntity?.attributes?.unit_of_measurement || '';
     
     let percentage = 0;
     if (isBarEntityPresent && isBarValueValid) {
@@ -85,36 +87,51 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
       barColor = this.config.color_bad;
     }
 
-    const unit = barEntity?.attributes?.unit_of_measurement || '';
+    // Prepare template variables to avoid issues with template literals
+    const cardBackground = isOn ? 'var(--card-background-color)' : 'var(--disabled-text-color)';
+    const cardOpacity = isOn ? '1' : '0.6';
+    const nameColor = isOn ? 'var(--primary-text-color)' : 'var(--secondary-text-color)';
+    const stateColor = isOn ? 'var(--primary-text-color)' : 'var(--secondary-text-color)';
+    const barOpacity = isOn ? '1' : '0.3';
+    const labelColor = isOn ? 'white' : 'var(--secondary-text-color)';
+    const deviceName = this.config.name || entity.attributes.friendly_name;
+    const barLabelText = isBarEntityPresent ? `${Math.trunc(barValue)}${unit}` : entity.state;
 
-    this.shadowRoot.innerHTML = `      <style>
+    this.shadowRoot.innerHTML = `
+      <style>
         ha-card {
           position: relative;
           overflow: hidden;
           cursor: pointer;
-        }        .card-content {
+        }
+        
+        .card-content {
           position: relative;
           border-radius: 10px;
-          background: ${isOn ? 'var(--card-background-color)' : 'var(--disabled-text-color)'};
-          opacity: ${isOn ? '1' : '0.6'};
+          background: ${cardBackground};
+          opacity: ${cardOpacity};
           min-height: 24px;
         }
-          .name {
+        
+        .name {
           font-size: 14px;
           font-weight: 500;
-          color: ${isOn ? 'var(--primary-text-color)' : 'var(--secondary-text-color)'};
+          color: ${nameColor};
           margin-bottom: 2px;
           line-height: 1.2;
-        }        .state {
+        }
+        
+        .state {
           font-size: 12px;
           position: absolute;
           right: 10px;
           top: 50%;
           transform: translateY(-50%);
-          color: ${isOn ? 'var(--primary-text-color)' : 'var(--secondary-text-color)'};
+          color: ${stateColor};
           line-height: 1.2;
         }
-          .bar {
+        
+        .bar {
           position: absolute;
           bottom: 0;
           left: 0;
@@ -126,7 +143,7 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
             var(--disabled-text-color) ${percentage}%, 
             var(--disabled-text-color) 100%);
           border-radius: 0 0 10px 10px;
-          opacity: ${isOn ? '1' : '0.3'};
+          opacity: ${barOpacity};
         }
         
         .bar-label {
@@ -138,32 +155,23 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
           line-height: 18px;
           font-size: 11px;
           font-weight: bold;
-          color: ${isOn ? 'white' : 'var(--secondary-text-color)'};
+          color: ${labelColor};
           text-shadow: 1px 1px 2px rgba(0,0,0,0.7);
           pointer-events: none;
         }
       </style>
-        <ha-card>
+      
+      <ha-card>
         <div class="card-content">
-          ${isBarEntityPresent ? `
-            <div class="name">
-              ${this.config.name || entity.attributes.friendly_name}
-            </div>
-          ` : ''}
+          ${isBarEntityPresent ? `<div class="name">${deviceName}</div>` : ''}
           
-          ${this.config.show_state && isBarEntityPresent ? `
-            <div class="state">
-              ${entity.state}
-            </div>
-          ` : ''}
+          ${this.config.show_state && isBarEntityPresent ? `<div class="state">${entity.state}</div>` : ''}
             
           <div class="bar"></div>
-            <div class="bar-label">
-            ${isBarEntityPresent ? `${Math.trunc(barValue)}${unit}` : entity.state}
-          </div>
+          <div class="bar-label">${barLabelText}</div>
         </div>
       </ha-card>
-    `;    // Add click and hold handlers
+    `;// Add click and hold handlers
     const card = this.shadowRoot.querySelector('ha-card');
     
     // Handle regular click
