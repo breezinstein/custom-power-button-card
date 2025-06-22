@@ -41,31 +41,30 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
   connectedCallback() {
     this.render();
   }
-
   render() {
     if (!this._hass || !this.config) return;
 
     const entity = this._hass.states[this.config.entity];
     const barEntity = this._hass.states[this.config.bar_entity];
     
-    if (!entity || !barEntity) {
+    if (!entity) {
       this.shadowRoot.innerHTML = `
         <ha-card>
           <div style="padding: 16px; color: var(--error-color);">
-            Entity not found: ${!entity ? this.config.entity : this.config.bar_entity}
+            Entity not found: ${this.config.entity}
           </div>
         </ha-card>
       `;
       return;
-    }    const barValue = parseFloat(barEntity.state || 0);
-    const isBarValueValid = !isNaN(barValue) && barEntity.state !== 'unavailable' && barEntity.state !== 'unknown';
+    }    const barValue = parseFloat(barEntity?.state || 0);
+    const isBarValueValid = !isNaN(barValue);
     
     let percentage = 0;
     if (isBarValueValid) {
       percentage = Math.max(0, Math.min(100, 
         ((barValue - this.config.bar_min) / (this.config.bar_max - this.config.bar_min)) * 100
       ));
-    }    let barColor;
+    }let barColor;
     if (!isBarValueValid) {
       barColor = 'var(--disabled-text-color)';
     } else if (percentage <= 33) {
@@ -74,10 +73,8 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
       barColor = this.config.color_mid;
     } else {
       barColor = this.config.color_bad;
-    }
-
-    const isOn = entity.state === 'on';
-    const unit = barEntity.attributes?.unit_of_measurement || '';
+    }    const isOn = entity.state === 'on';
+    const unit = barEntity?.attributes?.unit_of_measurement || '';
 
     this.shadowRoot.innerHTML = `      <style>
         ha-card {
@@ -147,10 +144,9 @@ class CustomPowerButtonCard extends HTMLElement {  constructor() {
               ${entity.state}
             </div>
           ` : ''}
-          
-          <div class="bar"></div>
+            <div class="bar"></div>
             <div class="bar-label">
-            ${isBarValueValid ? `${Math.trunc(barValue)}${unit}` : 'unavailable'}
+            ${Math.trunc(barValue)}${unit}
           </div>
         </div>
       </ha-card>
